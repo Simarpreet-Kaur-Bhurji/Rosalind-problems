@@ -1,3 +1,7 @@
+# import pysam 
+import re 
+from collections import defaultdict
+
 ## Rosalind Problems:
 ## Problem Set: Python Village 
 
@@ -103,3 +107,33 @@ def mortal_rabbits(n,m):
 # print(mortal_rabbits(88,17))
 
 #Q6: Computing GC content
+##Parse Fasta properly:
+filename = "rosalind_gc.txt"
+sequences = defaultdict(str)
+with open(filename) as f:
+    lines = f.readlines()
+
+current_tag = None
+for line in lines:
+    m = re.match('^>(.+)', line)
+
+    if m:
+        current_tag = m.group(1)
+    else:
+        seq = line.strip()
+        sequences[current_tag] += seq
+        
+another_dict = {}
+
+for k,v in sequences.items():
+    g = v.upper().count("G")
+    c = v.upper().count("C")
+    tot_gc = g+c
+    percent_gc = (tot_gc / len(v))*100
+    another_dict[k] = percent_gc
+
+# print(another_dict)
+max_val = max(another_dict.values())
+max_keys = [k for k, v in another_dict.items() if v == max_val]
+print(max_keys[0])
+print(max_val)
